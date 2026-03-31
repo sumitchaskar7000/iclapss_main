@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
 import { Icon } from '../components/Icons'
-import { SERVICES, PROJECTS, BLOGS, TESTIMONIALS, FAQS } from '../data'
+import { SERVICES, BLOGS, TESTIMONIALS, FAQS } from '../data'
+import { DemoRouter } from './DemoScreens'
 
 /* ─────────────────────────────────────────────
    SHARED HELPERS
@@ -116,6 +117,451 @@ function FAQItem({ q, a, defaultOpen }) {
   )
 }
 
+/* ─────────────────────────────────────────────
+   DEMO MODAL SYSTEM
+   Shows a rich preview card for demo/internal projects
+───────────────────────────────────────────── */
+
+function DemoModal({ project, onClose }) {
+  const { navigate } = useApp()
+
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(10,22,40,0.88)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '16px',
+        backdropFilter: 'blur(6px)',
+        animation: 'fadeIn .18s ease',
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: '#fff',
+          borderRadius: 20,
+          width: '100%',
+          maxWidth: 1060,
+          maxHeight: '92vh',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.4)',
+          animation: 'slideUp .22s ease',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div style={{ background: `linear-gradient(135deg, ${project.color}15, ${project.color}28)`, padding: '20px 28px', borderBottom: `1px solid ${project.color}25`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, boxShadow: `0 4px 14px ${project.color}30` }}>
+              {project.emoji}
+            </div>
+            <div>
+              <span style={{ display: 'inline-block', padding: '2px 9px', borderRadius: 999, background: `${project.color}20`, color: project.color, border: `1px solid ${project.color}35`, fontSize: 10, fontWeight: 700, marginBottom: 5, fontFamily: "'Plus Jakarta Sans',sans-serif", textTransform: 'uppercase', letterSpacing: '.07em' }}>
+                {project.cat}
+              </span>
+              <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 20, fontWeight: 800, color: '#0F172A', margin: 0, lineHeight: 1.25 }}>
+                {project.title}
+              </h2>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <a href="tel:7666519682" style={{ padding: '8px 16px', borderRadius: 10, background: 'rgba(255,255,255,0.8)', border: `1px solid ${project.color}30`, color: project.color, fontSize: 12, fontWeight: 700, textDecoration: 'none', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+              📞 76665 19682
+            </a>
+            <button onClick={() => { onClose(); navigate('contact') }} style={{ padding: '8px 16px', borderRadius: 10, background: project.color, border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+              Get This →
+            </button>
+            <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(0,0,0,0.08)', border: 'none', cursor: 'pointer', fontSize: 18, color: '#64748B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.08)'}>
+              ×
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Body: info left, full demo right */}
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '280px 1fr', overflow: 'hidden' }} className="demo-body-grid">
+
+          {/* Left Panel: project info */}
+          <div style={{ borderRight: '1px solid #F1F5F9', padding: '20px', overflowY: 'auto', background: '#FAFAFA' }}>
+            <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.8, marginBottom: 18 }}>{project.desc}</p>
+
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>Features</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 20 }}>
+              {project.tags.map(f => (
+                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#334155', fontWeight: 500 }}>
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: `${project.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke={project.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                  {f}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 10 }}>Results</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
+              {project.results.map((r, i) => (
+                <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: '#fff', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                  <div style={{ width: 20, height: 20, borderRadius: 5, background: project.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: '#fff', flexShrink: 0 }}>{i + 1}</div>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: '#334155' }}>{r}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding: '14px', background: 'linear-gradient(135deg,#0A1628,#0F2040)', borderRadius: 12 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#fff', margin: '0 0 6px' }}>Want this for your business?</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', margin: '0 0 12px' }}>Custom-built in 2–4 weeks.</p>
+              <button onClick={() => { onClose(); navigate('contact') }} style={{ width: '100%', padding: '8px', borderRadius: 8, background: '#1A56DB', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                Get Free Demo →
+              </button>
+            </div>
+          </div>
+
+          {/* Right Panel: FULL interactive demo */}
+          <div style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <DemoRouter project={project} />
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slideUp { from { transform: translateY(24px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+        @media (max-width: 700px) {
+          .demo-body-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   PROJECT DATA
+───────────────────────────────────────────── */
+
+export const PROJECTS = [
+  // Educational Institutions — these are real live sites
+  {
+    id: 1, isLive: true,
+    title: "Jadhavar Foundation's Institute of Nursing", cat: "Education", emoji: "🏥", color: "#10B981",
+    desc: "Comprehensive nursing education platform with course management, student portal, and placement tracking system.",
+    results: ["300+ Students Enrolled", "95% Placement Rate", "Digital Admission System"],
+    tags: ["WordPress", "LMS", "Student Portal"],
+    url: "www.jadhavarfoundations.org"
+  },
+  {
+    id: 2, isLive: true,
+    title: "Jadhavar College of Law", cat: "Education", emoji: "⚖️", color: "#3B82F6",
+    desc: "Law college website with course details, faculty profiles, and legal resource center.",
+    results: ["150+ Law Students", "Moot Court Integration", "Legal Library Access"],
+    tags: ["React", "CMS", "Legal Portal"],
+    url: "www.jadhavarcollegeoflaw.com"
+  },
+  {
+    id: 3, isLive: true,
+    title: "Dr. Sudhakarrao Jadhavar College", cat: "Education", emoji: "🎓", color: "#8B5CF6",
+    desc: "Arts, Commerce & Science college with academic management and event calendar.",
+    results: ["1000+ Students", "Digital Library", "Exam Results Portal"],
+    tags: ["PHP", "MySQL", "College ERP"],
+    url: "jadhavarseniorcollege.com"
+  },
+  {
+    id: 4, isLive: true,
+    title: "Aditya Institute of Management", cat: "Education", emoji: "📊", color: "#EC489A",
+    desc: "MBA and PGDM institute with placement cell, alumni network, and corporate tie-ups.",
+    results: ["200+ MBA Graduates", "Corporate Partners", "Placement Portal"],
+    tags: ["LMS", "Career Portal", "Alumni Network"],
+    url: "www.adityainstitutemanagement.com"
+  },
+  {
+    id: 5, isLive: true,
+    title: "Jadhavar International School", cat: "Education", emoji: "🌍", color: "#14B8A6",
+    desc: "CBSE school with online fee payment, parent portal, and academic calendar.",
+    results: ["500+ Students", "Parent App", "Digital Fee Collection"],
+    tags: ["Mobile App", "School ERP", "Payment Gateway"],
+    url: "www.jadhavarcbse.com"
+  },
+  {
+    id: 6, isLive: true,
+    title: "Paradise English Medium School", cat: "Education", emoji: "📚", color: "#F59E0B",
+    desc: "Junior college with academic tracking, homework management, and parent communication.",
+    results: ["Teacher Portal", "Homework System", "Progress Reports"],
+    tags: ["School Management", "Parent App", "Attendance System"],
+    url: "www.jadhavarjrcollege.com"
+  },
+
+  // Business & Corporate — real live sites
+  {
+    id: 7, isLive: true,
+    title: "Akruit Construction", cat: "Construction", emoji: "🏗️", color: "#EF4444",
+    desc: "Construction company website with project portfolio, client testimonials, and service catalog.",
+    results: ["Project Gallery", "Client Portal", "Lead Generation"],
+    tags: ["Portfolio", "Project Management", "Lead Capture"],
+    url: "akruticonstruction.com"
+  },
+  {
+    id: 8, isLive: true,
+    title: "Canmax India", cat: "Corporate", emoji: "🏭", color: "#6366F1",
+    desc: "Manufacturing company website with product catalog, industrial solutions, and B2B portal.",
+    results: ["Product Database", "B2B Inquiry", "Manufacturing Showcase"],
+    tags: ["B2B Portal", "Catalog", "Industrial"],
+    url: "canmaxindia.com"
+  },
+  {
+    id: 9, isLive: true,
+    title: "Trevanta World", cat: "Corporate", emoji: "🌐", color: "#06B6D4",
+    desc: "Global business platform with corporate profile, services, and international presence.",
+    results: ["Global Reach", "Corporate Branding", "Service Showcase"],
+    tags: ["Corporate", "Global", "Business Portal"],
+    url: "trevantaword.com"
+  },
+
+  // AI & Technology — DEMO projects (no live URL, show modal)
+  {
+    id: 10, isLive: false,
+    title: "AI Sales Agent", cat: "AI Solutions", emoji: "🤖", color: "#8B5CF6",
+    desc: "Intelligent AI sales assistant that handles leads, answers queries, and books appointments automatically.",
+    results: ["24/7 Lead Capture", "50% Conversion Increase", "Automated Follow-ups"],
+    tags: ["AI", "Chatbot", "Lead Generation", "Automation"],
+  },
+  {
+    id: 11, isLive: false,
+    title: "AI Customer Support Bot", cat: "AI Solutions", emoji: "💬", color: "#10B981",
+    desc: "Smart customer support automation with NLP understanding, ticket management, and instant responses.",
+    results: ["80% Query Resolution", "Reduced Support Cost", "24/7 Availability"],
+    tags: ["NLP", "Support Automation", "Ticketing System"],
+  },
+  {
+    id: 12, isLive: false,
+    title: "Smart Gym Management System", cat: "Business Software", emoji: "💪", color: "#EF4444",
+    desc: "Complete gym management with member tracking, attendance, billing, and workout plans.",
+    results: ["Member Portal", "Automated Billing", "Workout Tracking"],
+    tags: ["SaaS", "Gym Software", "Member Management"],
+  },
+  {
+    id: 13, isLive: false,
+    title: "AI Marketing Analytics Dashboard", cat: "AI Solutions", emoji: "📈", color: "#F59E0B",
+    desc: "Predictive analytics dashboard that forecasts campaign performance and ROI optimization.",
+    results: ["ROI Prediction", "Campaign Insights", "Data Visualization"],
+    tags: ["Analytics", "AI", "Dashboard", "Predictive"],
+  },
+  {
+    id: 14, isLive: false,
+    title: "E-Commerce Intelligence Suite", cat: "E-Commerce", emoji: "🛒", color: "#EC489A",
+    desc: "AI-powered e-commerce platform with personalization, recommendation engine, and inventory management.",
+    results: ["35% Sales Increase", "Personalized Shopping", "Smart Inventory"],
+    tags: ["E-Commerce", "AI", "Recommendations"],
+  },
+
+  // Small Business — DEMO
+  {
+    id: 15, isLive: false,
+    title: "Local Restaurant Platform", cat: "Small Business", emoji: "🍽️", color: "#EF4444",
+    desc: "Complete restaurant solution with online ordering, table booking, and loyalty program.",
+    results: ["Online Orders", "Table Management", "Customer Loyalty"],
+    tags: ["Restaurant", "Food Delivery", "Booking System"],
+  },
+  {
+    id: 16, isLive: false,
+    title: "Salon & Spa Management", cat: "Small Business", emoji: "💇", color: "#EC489A",
+    desc: "Beauty salon software with appointment booking, staff management, and service catalog.",
+    results: ["Appointment System", "Staff Schedule", "Client Database"],
+    tags: ["Booking System", "Salon Software", "CRM"],
+  },
+  {
+    id: 17, isLive: false,
+    title: "Retail Store POS System", cat: "Small Business", emoji: "🏪", color: "#F59E0B",
+    desc: "Point of sale system with inventory tracking, sales analytics, and customer management.",
+    results: ["Inventory Control", "Sales Analytics", "Customer Management"],
+    tags: ["POS", "Retail", "Inventory"],
+  },
+
+  // Large Business — DEMO
+  {
+    id: 18, isLive: false,
+    title: "Enterprise ERP System", cat: "Large Business", emoji: "🏢", color: "#3B82F6",
+    desc: "Complete ERP solution for large enterprises with HR, Finance, Inventory, and CRM modules.",
+    results: ["Unified Platform", "Real-time Analytics", "Scalable Architecture"],
+    tags: ["ERP", "Enterprise", "HRMS", "CRM"],
+  },
+  {
+    id: 19, isLive: false,
+    title: "Supply Chain Management", cat: "Large Business", emoji: "🚚", color: "#14B8A6",
+    desc: "AI-powered supply chain platform with demand forecasting, logistics tracking, and vendor management.",
+    results: ["Cost Reduction", "Demand Forecasting", "Logistics Optimization"],
+    tags: ["Supply Chain", "AI", "Logistics"],
+  },
+  {
+    id: 20, isLive: false,
+    title: "HR & Talent Management Suite", cat: "Large Business", emoji: "👥", color: "#8B5CF6",
+    desc: "Complete HR platform with recruitment, performance management, payroll, and employee engagement.",
+    results: ["Recruitment Portal", "Performance Reviews", "Payroll Integration"],
+    tags: ["HRMS", "Payroll", "Recruitment"],
+  },
+
+  // Additional Educational — live
+  {
+    id: 21, isLive: true,
+    title: "Jadhavar College of Paramedical", cat: "Education", emoji: "🩺", color: "#06B6D4",
+    desc: "Paramedical college with course management, practical training, and internship coordination.",
+    results: ["Clinical Training", "Internship Portal", "Skill Development"],
+    tags: ["Medical Education", "LMS", "Training"],
+    url: "www.jadhavarparamedicalcollege.com"
+  },
+  {
+    id: 22, isLive: true,
+    title: "Shardulrao Jadhavar College of Law", cat: "Education", emoji: "⚖️", color: "#6366F1",
+    desc: "Law college with digital library, moot court resources, and legal aid clinic.",
+    results: ["Legal Resources", "Moot Court", "Alumni Network"],
+    tags: ["Legal Education", "Resource Center", "Events"],
+    url: "www.shardulraojadhavarcollegeoflaw.com"
+  },
+  {
+    id: 23, isLive: true,
+    title: "SJIMT Management Institute", cat: "Education", emoji: "📈", color: "#EF4444",
+    desc: "Management and technology institute with placement cell, industry partnerships, and skill programs.",
+    results: ["Corporate Training", "Placement Support", "Skill Programs"],
+    tags: ["Management", "Training", "Placement"],
+    url: "www.sjimt.in"
+  },
+  {
+    id: 24, isLive: true,
+    title: "Aditya PGDM Institute", cat: "Education", emoji: "🎯", color: "#EC489A",
+    desc: "PGDM institute with specialized courses, corporate mentorship, and career guidance.",
+    results: ["Specialized Programs", "Corporate Mentors", "Career Support"],
+    tags: ["PGDM", "Management", "Career"],
+    url: "www.adityainstitutepgdm.com"
+  },
+  {
+    id: 25, isLive: true,
+    title: "Jadhavar English Medium School", cat: "Education", emoji: "📖", color: "#14B8A6",
+    desc: "English medium school with digital classrooms, parent portal, and academic tracking.",
+    results: ["Digital Learning", "Parent Portal", "Progress Tracking"],
+    tags: ["School Management", "Digital Learning", "Parent App"],
+    url: "www.jadhavarenglishschool.com"
+  },
+  {
+    id: 26, isLive: true,
+    title: "Sanskruti Techno School", cat: "Education", emoji: "🔬", color: "#8B5CF6",
+    desc: "Technology-focused school with STEM labs, coding programs, and innovation center.",
+    results: ["STEM Labs", "Coding Programs", "Innovation Hub"],
+    tags: ["STEM", "Coding", "Innovation"],
+    url: "www.sanskrutitechnoschool.com"
+  },
+  {
+    id: 27, isLive: true,
+    title: "Jadhavar Yuva Sansad", cat: "Non-Profit", emoji: "🗳️", color: "#F59E0B",
+    desc: "Youth parliament platform for leadership development, debates, and civic engagement.",
+    results: ["Youth Leadership", "Debate Platform", "Civic Engagement"],
+    tags: ["Non-Profit", "Youth", "Leadership"],
+    url: "www.jadhavaryuvasansad.com"
+  },
+  {
+    id: 28, isLive: true,
+    title: "Jadhavar Group of Institutes", cat: "Education", emoji: "🏛️", color: "#3B82F6",
+    desc: "Group of institutes portal with unified admission, student management, and resource sharing.",
+    results: ["Unified Platform", "Centralized Admission", "Resource Sharing"],
+    tags: ["Education Group", "Portal", "Management"],
+    url: "www.jadhavargroupofinstitute.in"
+  },
+  {
+    id: 29, isLive: true,
+    title: "JGEFS B.Ed College", cat: "Education", emoji: "👩‍🏫", color: "#10B981",
+    desc: "Teacher training college with curriculum management, practice teaching, and certification.",
+    results: ["Teacher Training", "Practice Teaching", "Certification"],
+    tags: ["Teacher Education", "Training", "Certification"],
+    url: "www.jgefs.org"
+  },
+  {
+    id: 30, isLive: true,
+    title: "Jadhavar Primary & Secondary School", cat: "Education", emoji: "🏫", color: "#06B6D4",
+    desc: "Semi-english medium school with foundational education and after-school programs.",
+    results: ["Foundational Education", "After School Programs", "Parent Portal"],
+    tags: ["Primary Education", "School Management", "Parent Communication"],
+    url: "www.jadhavarsemienglish.in"
+  },
+  {
+    id: 31, isLive: true,
+    title: "Paradise English Medium School", cat: "Education", emoji: "🌟", color: "#EC489A",
+    desc: "English medium school with co-curricular activities, sports programs, and academic excellence.",
+    results: ["Co-curricular", "Sports Programs", "Academic Excellence"],
+    tags: ["School", "Sports", "Activities"],
+    url: "www.paradiseems.co.in"
+  },
+
+  // Additional AI Solutions — DEMO
+  {
+    id: 32, isLive: false,
+    title: "AI Healthcare Assistant", cat: "AI Solutions", emoji: "🏥", color: "#EF4444",
+    desc: "AI-powered healthcare assistant for symptom checking, appointment booking, and health tracking.",
+    results: ["Symptom Checker", "Appointment System", "Health Records"],
+    tags: ["Healthcare", "AI", "Telemedicine"],
+  },
+  {
+    id: 33, isLive: false,
+    title: "Smart Retail Analytics", cat: "AI Solutions", emoji: "📊", color: "#F59E0B",
+    desc: "AI-driven retail analytics with customer behavior, inventory optimization, and sales forecasting.",
+    results: ["Customer Insights", "Inventory Optimization", "Sales Forecast"],
+    tags: ["Retail Analytics", "AI", "Business Intelligence"],
+  },
+  {
+    id: 34, isLive: false,
+    title: "Automated Lead Generation System", cat: "AI Solutions", emoji: "🎯", color: "#8B5CF6",
+    desc: "AI system that identifies high-intent leads, automates outreach, and tracks engagement.",
+    results: ["Lead Scoring", "Automated Outreach", "Engagement Tracking"],
+    tags: ["Lead Generation", "AI", "Marketing Automation"],
+  },
+  {
+    id: 35, isLive: false,
+    title: "Virtual Event Platform", cat: "Tech Solutions", emoji: "🎥", color: "#3B82F6",
+    desc: "Complete virtual event platform with live streaming, networking, and engagement tools.",
+    results: ["Live Streaming", "Networking Tools", "Analytics Dashboard"],
+    tags: ["Events", "Video", "Networking"],
+  },
+
+  // Small Business Additional — DEMO
+  {
+    id: 36, isLive: false,
+    title: "Fitness Studio Management", cat: "Small Business", emoji: "🏋️", color: "#EF4444",
+    desc: "Complete fitness studio solution with class scheduling, membership management, and workout plans.",
+    results: ["Class Scheduling", "Membership System", "Progress Tracking"],
+    tags: ["Fitness", "Membership", "Scheduling"],
+  },
+  {
+    id: 37, isLive: false,
+    title: "Real Estate CRM", cat: "Small Business", emoji: "🏠", color: "#14B8A6",
+    desc: "CRM for real estate agents with property management, lead tracking, and document handling.",
+    results: ["Property Listings", "Lead Management", "Document Storage"],
+    tags: ["Real Estate", "CRM", "Property"],
+  },
+  {
+    id: 38, isLive: false,
+    title: "Freelancer Portfolio Platform", cat: "Small Business", emoji: "💼", color: "#6366F1",
+    desc: "Portfolio platform for freelancers with project showcase, client management, and invoicing.",
+    results: ["Portfolio Builder", "Client Management", "Invoicing System"],
+    tags: ["Freelancer", "Portfolio", "Invoicing"],
+  },
+
+  // Large Business Additional — DEMO
+  {
+    id: 39, isLive: false,
+    title: "Enterprise Learning Management", cat: "Large Business", emoji: "📚", color: "#8B5CF6",
+    desc: "Enterprise-grade LMS with course creation, certification, and employee development tracking.",
+    results: ["Course Management", "Certification", "Skill Tracking"],
+    tags: ["LMS", "Enterprise", "Training"],
+  },
+  {
+    id: 40, isLive: false,
+    title: "Corporate Governance Portal", cat: "Large Business", emoji: "🏛️", color: "#3B82F6",
+    desc: "Complete corporate governance solution with compliance, risk management, and board communication.",
+    results: ["Compliance Tracking", "Risk Management", "Board Portal"],
+    tags: ["Governance", "Compliance", "Risk"],
+  }
+]
+
 /* ═════════════════════════════════════════════
    SERVICES PAGE
 ═════════════════════════════════════════════ */
@@ -135,7 +581,6 @@ export function Services() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 80 }}>
             {SERVICES.map((s, i) => (
               <div key={s.id} className="svc-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
-                {/* Text side — swap visual order on alternating rows using CSS order */}
                 <div style={{ order: i % 2 === 1 ? 2 : 1 }}>
                   <div className="svc-icon" style={{ marginBottom: 18 }}>
                     <Icon name={s.icon} size={28} color="#1A56DB" />
@@ -159,7 +604,6 @@ export function Services() {
                   </button>
                 </div>
 
-                {/* Results card */}
                 <div style={{ order: i % 2 === 1 ? 1 : 2, background: 'linear-gradient(135deg,#EFF6FF,#DBEAFE)', borderRadius: 20, padding: 'clamp(24px,4vw,36px)', border: '1px solid #BFDBFE' }}>
                   <h4 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 12, fontWeight: 700, color: '#1A56DB', letterSpacing: '.07em', textTransform: 'uppercase', marginBottom: 20 }}>
                     Results We Deliver
@@ -219,7 +663,6 @@ export function ServiceDetail() {
       <div className="section">
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 48, alignItems: 'start' }} className="svc-detail-layout">
-
             <div>
               <h2 className="h3" style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", marginBottom: 18 }}>How We Do It</h2>
               <p style={{ fontSize: 15, color: 'var(--text3)', lineHeight: 1.9, marginBottom: 30 }}>{s.desc}</p>
@@ -263,7 +706,6 @@ export function ServiceDetail() {
                 </a>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -285,8 +727,24 @@ export function ServiceDetail() {
 export function Projects() {
   const { navigate } = useApp()
   const [filter, setFilter] = useState('All')
+  const [demoProject, setDemoProject] = useState(null)
+
   const cats    = ['All', ...new Set(PROJECTS.map(p => p.cat))]
   const visible = filter === 'All' ? PROJECTS : PROJECTS.filter(p => p.cat === filter)
+
+  const categoryCounts = cats.reduce((acc, cat) => {
+    if (cat === 'All') return acc
+    acc[cat] = PROJECTS.filter(p => p.cat === cat).length
+    return acc
+  }, {})
+
+  function handleCardClick(p) {
+    if (p.isLive && p.url) {
+      window.open(`https://${p.url}`, '_blank')
+    } else {
+      setDemoProject(p)
+    }
+  }
 
   return (
     <div>
@@ -296,6 +754,11 @@ export function Projects() {
         title={`Projects That <span style="color:#60A5FA">Delivered</span>`}
         sub="Real results for real businesses. See how we have helped companies outgrow their competitors."
       />
+
+      {/* Demo Modal */}
+      {demoProject && (
+        <DemoModal project={demoProject} onClose={() => setDemoProject(null)} />
+      )}
 
       <div className="section">
         <div className="container">
@@ -311,11 +774,32 @@ export function Projects() {
                   background: filter === c ? '#1A56DB' : 'var(--gray5)',
                   color:      filter === c ? '#fff'     : '#475569',
                   transition: 'all .2s',
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
                 }}
               >
                 {c}
+                {c !== 'All' && (
+                  <span style={{
+                    background: filter === c ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
+                    padding: '2px 6px', borderRadius: 20, fontSize: 11, fontWeight: 500,
+                  }}>
+                    {categoryCounts[c]}
+                  </span>
+                )}
               </button>
             ))}
+          </div>
+
+          {/* Legend */}
+          <div style={{ display: 'flex', gap: 20, justifyContent: 'center', marginBottom: 32, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'var(--text3)' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#10B981', display: 'inline-block' }} />
+              Live Website — Click to Visit
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'var(--text3)' }}>
+              <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#1A56DB', display: 'inline-block' }} />
+              Solution Demo — Click to Preview
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }} className="proj-grid">
@@ -323,20 +807,48 @@ export function Projects() {
               <div
                 key={p.id}
                 className="card"
-                style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
-                onClick={() => navigate('contact')}
+                style={{ overflow: 'hidden', padding: 0, cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                onClick={() => handleCardClick(p)}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.1)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
               >
                 <div
                   style={{
                     background: `${p.color}18`, padding: 40,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderBottom: '1px solid var(--gray4)',
+                    position: 'relative',
                   }}
                 >
                   <span style={{ fontSize: 52 }}>{p.emoji}</span>
+                  {/* Badge: Live or Demo */}
+                  <div style={{
+                    position: 'absolute', bottom: 12, right: 12,
+                    fontSize: 10, fontWeight: 700,
+                    padding: '4px 10px', borderRadius: 999,
+                    background: p.isLive ? '#D1FAE5' : '#DBEAFE',
+                    color: p.isLive ? '#065F46' : '#1E40AF',
+                    fontFamily: "'Plus Jakarta Sans',sans-serif",
+                    display: 'flex', alignItems: 'center', gap: 4,
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: p.isLive ? '#10B981' : '#1A56DB', display: 'inline-block' }} />
+                    {p.isLive ? 'Live Site →' : 'View Demo'}
+                  </div>
                 </div>
                 <div style={{ padding: 24 }}>
-                  <span className="badge badge-blue" style={{ marginBottom: 12 }}>{p.cat}</span>
+                  <span className="badge" style={{
+                    marginBottom: 12,
+                    background: `${p.color}20`, color: p.color,
+                    border: `1px solid ${p.color}30`,
+                  }}>
+                    {p.cat}
+                  </span>
                   <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 10, lineHeight: 1.4 }}>
                     {p.title}
                   </h3>
@@ -344,18 +856,28 @@ export function Projects() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 18 }}>
                     {p.results.map(r => (
                       <div key={r} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text2)', fontWeight: 600 }}>
-                        <Icon name="check" size={13} color="#1A56DB" /> {r}
+                        <Icon name="check" size={13} color={p.color} /> {r}
                       </div>
                     ))}
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     {p.tags.map(t => (
-                      <span key={t} className="badge badge-blue" style={{ fontSize: 11, padding: '3px 9px' }}>{t}</span>
+                      <span key={t} className="badge" style={{ fontSize: 11, padding: '3px 9px', background: 'var(--gray5)', color: 'var(--text2)' }}>
+                        {t}
+                      </span>
                     ))}
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Count */}
+          <div style={{ textAlign: 'center', marginTop: 48, padding: 24, background: 'var(--gray6)', borderRadius: 12 }}>
+            <p style={{ fontSize: 14, color: 'var(--text3)' }}>
+              Showing <strong style={{ color: '#1A56DB' }}>{visible.length}</strong> of <strong>{PROJECTS.length}</strong> projects
+              {filter !== 'All' && ` in ${filter} category`}
+            </p>
           </div>
         </div>
       </div>
@@ -545,12 +1067,12 @@ export function About() {
   ]
 
   const values = [
-    { icon: 'target',   title: 'Revenue-First',         desc: 'Every decision is evaluated by one metric: does it grow your business?' },
-    { icon: 'shield',   title: 'Radical Transparency',  desc: 'No black boxes. Live dashboards, honest reporting — always.' },
-    { icon: 'trend',    title: 'Continuous Optimisation', desc: 'Daily monitoring, weekly optimisations, monthly strategy reviews.' },
-    { icon: 'lightning',title: 'Speed to Results',      desc: 'From strategy to execution in days, not months.' },
-    { icon: 'users',    title: 'Client Obsession',       desc: 'We treat your business with the same care as our own.' },
-    { icon: 'chart',    title: 'Data Over Gut',          desc: 'We test, measure, and scale — never guess.' },
+    { icon: 'target',    title: 'Revenue-First',          desc: 'Every decision is evaluated by one metric: does it grow your business?' },
+    { icon: 'shield',    title: 'Radical Transparency',   desc: 'No black boxes. Live dashboards, honest reporting — always.' },
+    { icon: 'trend',     title: 'Continuous Optimisation', desc: 'Daily monitoring, weekly optimisations, monthly strategy reviews.' },
+    { icon: 'lightning', title: 'Speed to Results',       desc: 'From strategy to execution in days, not months.' },
+    { icon: 'users',     title: 'Client Obsession',        desc: 'We treat your business with the same care as our own.' },
+    { icon: 'chart',     title: 'Data Over Gut',           desc: 'We test, measure, and scale — never guess.' },
   ]
 
   return (
@@ -717,12 +1239,12 @@ export function Contact() {
   }
 
   const contactItems = [
-    { icon: 'phone', label: 'Call or WhatsApp', value: '76665 19682', href: 'tel:7666519682' },
+    { icon: 'phone', label: 'Call or WhatsApp', value: '76665 19682',       href: 'tel:7666519682' },
     { icon: 'mail',  label: 'Email Us',          value: 'info@iclapss.com', href: 'mailto:info@iclapss.com' },
     { icon: 'map',   label: 'Response Time',     value: 'Within 2 business hours', href: null },
   ]
 
-  const services = ['Digital Marketing', 'Website Development', 'SEO and Growth', 'Content Writing', 'B2B Growth Strategy', 'B2C Marketing', 'Full-Service Growth']
+  const services = ['Digital Marketing', 'Website Development', 'SEO and Growth', 'Content Writing', 'B2B Growth Strategy', 'B2C Marketing', 'Full-Service Growth', 'AI Solutions', 'Business Software', 'E-Commerce Solutions']
   const budgets  = ['Under 15,000', '15,000 to 30,000', '30,000 to 60,000', '60,000 to 1,00,000', '1,00,000+']
 
   return (
@@ -792,7 +1314,6 @@ export function Contact() {
                     Fill in your details and get a free personalised growth audit within 24 hours.
                   </p>
 
-                  {/* Row 1 */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }} className="form-row">
                     {[
                       { key: 'name',    label: 'Full Name',         type: 'text',  req: true,  ph: 'Your Full Name' },
@@ -809,7 +1330,6 @@ export function Contact() {
                     ))}
                   </div>
 
-                  {/* Row 2 */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }} className="form-row">
                     <div>
                       <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text2)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.04em' }}>
@@ -831,7 +1351,6 @@ export function Contact() {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div style={{ marginBottom: 24 }}>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text2)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.04em' }}>
                       Tell Us About Your Goals
@@ -859,7 +1378,6 @@ export function Contact() {
                 </form>
               )}
             </div>
-
           </div>
         </div>
       </div>

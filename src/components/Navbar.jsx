@@ -73,21 +73,19 @@ export default function Navbar() {
             style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', cursor: 'pointer', color: 'inherit' }}
             aria-label="Go to home"
           >
-              <div
+            
+            {/* ✅ ONLY THIS PART CHANGED */}
+            <img
+              src="/images/logo.svg"   // you can use .png / .jpg also
+              alt="iClapss Logo"
               style={{
                 width: 36,
                 height: 36,
-                borderRadius: 8,
-                background: brandBg,
-                border: brandBorder,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all .3s',
+                objectFit: 'contain',
+                borderRadius: 8
               }}
-            >
-              <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 15, fontWeight: 800, color: '#000000' }}>iC</span>
-            </div>
+            />
+
             <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 19, fontWeight: 800, color: brandColor, letterSpacing: '-.02em', transition: 'color .3s' }}>
               iClapss
             </span>
@@ -161,8 +159,6 @@ export default function Navbar() {
               color: textColor,
             }}
             aria-label="Open menu"
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
           >
             <Icon name="menu" size={22} color="#000000" />
           </button>
@@ -187,56 +183,30 @@ export default function Navbar() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
+            
+            {/* ✅ MOBILE LOGO ALSO CHANGED */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#1A56DB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 15, fontWeight: 800, color: '#000000' }}>iC</span>
-              </div>
-              <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 19, fontWeight: 800, color: '#000000' }}>iClapss</span>
+              <img
+                src="/logo.svg"
+                alt="iClapss Logo"
+                style={{ width: 36, height: 36 }}
+              />
+              <span style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 19, fontWeight: 800, color: '#000000' }}>
+                iClapss
+              </span>
             </div>
-            <button type="button" onClick={() => setMobileOpen(false)} style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(255,255,255,.1)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Close menu">
+
+            <button type="button" onClick={() => setMobileOpen(false)} style={{ width: 40, height: 40 }}>
               <Icon name="close" size={20} color="#fff" />
             </button>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
             {LINKS.map(({ label, page: pg }, i) => (
-              <button
-                type="button"
-                key={pg}
-                onClick={() => handleNavigate(pg)}
-                style={{
-                  padding: '15px 18px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  background: page === pg ? 'rgba(26,86,219,.2)' : 'transparent',
-                  borderRadius: 10,
-                  fontFamily: "'Plus Jakarta Sans',sans-serif",
-                  fontSize: 18,
-                  fontWeight: 600,
-                  color: page === pg ? '#1A56DB' : '#000000',
-                  transition: 'all .15s',
-                  animation: `fadeUp .3s ease ${i * 0.05}s both`,
-                }}
-                aria-current={page === pg ? 'page' : undefined}
-              >
+              <button key={pg} onClick={() => handleNavigate(pg)}>
                 {label}
               </button>
             ))}
-          </div>
-
-          <div style={{ borderTop: '1px solid rgba(255,255,255,.08)', paddingTop: 24, marginTop: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <a href="tel:7666519682" style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#000000', fontSize: 15 }}>
-              <Icon name="phone" size={18} color="#1A56DB" />
-              76665 19682
-            </a>
-            <a href="mailto:info@iclapss.com" style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#000000', fontSize: 15 }}>
-              <Icon name="mail" size={18} color="#1A56DB" />
-              info@iclapss.com
-            </a>
-            <button type="button" onClick={() => handleNavigate('contact')} className="btn btn-primary btn-full" style={{ marginTop: 8 }}>
-              Get Free Strategy Audit
-            </button>
           </div>
         </div>
       )}

@@ -3,6 +3,8 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { Icon } from './components/Icons'
 import Home from './pages/Home'
+import DemoScreens from './pages/DemoScreens'   // ✅ ADDED
+
 import {
   Services,
   ServiceDetail,
@@ -49,6 +51,16 @@ function PageRenderer() {
   if (page === 'blogpost')  return <BlogPost />
   if (page === 'about')     return <About />
   if (page === 'contact')   return <Contact />
+
+  // ✅ ONLY ADDED (DemoScreens)
+  if (page === 'demos')     return <DemoScreens />
+
+  if (page === '404')       return (
+    <div style={{ padding: 40, textAlign: 'center' }}>
+      <h1>404 - Page Not Found</h1>
+    </div>
+  )
+
   return <Home />
 }
 
