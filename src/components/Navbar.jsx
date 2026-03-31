@@ -187,7 +187,7 @@ export default function Navbar() {
             {/* ✅ MOBILE LOGO ALSO CHANGED */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
               <img
-                src="/logo.svg"
+                src="/images/logo.svg"
                 alt="iClapss Logo"
                 style={{ width: 36, height: 36 }}
               />
